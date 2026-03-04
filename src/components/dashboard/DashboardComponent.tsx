@@ -43,7 +43,9 @@ export default function DashboardComponent() {
                            
                         </div>
 
-                        
+                            {/* right column - sleep records */}
+                        <div>
+                        </div>
                     </div>
                 </div>
             </div>
