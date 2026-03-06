@@ -27,6 +27,7 @@ export default function AddSleepRecord({onCancel,userId}:AddSleepProps) {
        const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        if(!userId) return;
 
         try {
             const formData = new FormData(e.currentTarget as HTMLFormElement);

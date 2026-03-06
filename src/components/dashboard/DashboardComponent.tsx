@@ -1,24 +1,28 @@
 "use client"
 
-import {  Calendar, User } from "lucide-react";
+import { Calendar, User } from "lucide-react";
 import { useUserSession } from "../../../custom-hooks/useSession";
 import Header from "./Header";
 import { Activity, useState } from "react";
 import { sleepQualityOptions } from "./AddSleepRecord";
 import AddSleepRecord from "./AddSleepRecord";
+import Image from "next/image";
 
-const sampleSleepHistory = 
-[
-    {date:"2024-5-8", duration:"7.5", quality:"good"},
-    {date:"2024-5-9", duration:"6.5", quality:"average"},
-];
+
+
+const sampleSleepHistory =
+    [
+        { date: "2024-5-8", duration: "7.5", quality: "good" },
+        { date: "2024-5-9", duration: "6.5", quality: "average" },
+    ];
 
 
 
 export default function DashboardComponent() {
     const { loading, session } = useUserSession();
-    const userId = session?.user.id
-    const [showAddForm,setShowAddForm] = useState(false);
+    const userId = session?.user.id;
+    const userDetails = session?.user.user_metadata;
+    const [showAddForm, setShowAddForm] = useState(false);
 
     if (loading) return <p>Loading.....</p>
 
@@ -34,25 +38,30 @@ export default function DashboardComponent() {
                             {/* user profile card */}
                             <div className="bg-slate-800 rounded-2xl p-6 border-slate-700">
                                 <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-16 h-16 bg-fuchsia-600 rounded-full grid place-items-center">
+                                    <div className="w-16 h-16 bg-fuchsia-600 rounded-full grid place-items-center relative overflow-hidden">
+                                        {userDetails?.avatar_url ? (
+                                        <Image src={userDetails.avatar_url} alt="Profile-pic" fill className="object-cover" />
+                                        ) : (
+
                                         <User size={24} />
+                                        )}
                                     </div>
                                     <div>
-                                        <h2 className="text-xl font-semibold text-white">User name</h2>
-                                        <p className="text-gray-400 text-sm">user@gmail</p>
+                                        <h2 className="text-xl font-semibold text-white">{userDetails?.full_name}</h2>
+                                        <p className="text-gray-400 text-sm">{userDetails?.email}</p>
                                     </div>
                                 </div>
                             </div>
                             {/* add sleep form */}
-                            <Activity mode={showAddForm ? 'visible' :'hidden'}>
+                            <Activity mode={showAddForm ? 'visible' : 'hidden'}>
 
                                 <AddSleepRecord userId={userId} onCancel={() => setShowAddForm(false)} />
                             </Activity>
-                            
-                           
+
+
                         </div>
 
-                            {/* right column - sleep records */}
+                        {/* right column - sleep records */}
                         <div className="space-y-8 lg:col-span-2">
                             {/* sleep statistics */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -73,33 +82,33 @@ export default function DashboardComponent() {
 
                             {/* sleep history */}
                             <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-                            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                <Calendar size={20} className="text-fuchsia-500"/>
-                                Sleep History
-                            </h3>
-                            <div className="overflow-x-auto">
-                            <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-slate-700">
-                                    <td className="text-left py-3 font-medium text-gray-400">Date</td>
-                                    <td className="text-left py-3 font-medium text-gray-400">Duration</td>
-                                    <td className="text-left py-3 font-medium text-gray-400">Quality</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                           {sampleSleepHistory.map((record,index)=> {
-                            const qualityOption = sleepQualityOptions.find(option => option.value === record.quality)
-                            return (
-                                 <tr key={index} className="border-b border-slate-700/50 last:border-0">
-                                    <td className="py-3">{new Date(record.date).toLocaleDateString()}</td>
-                                    <td className="py-3">{record.duration}h</td>
-                                    <td className={`py-3 ${qualityOption?.color}`}>{qualityOption?.label}</td>
-                                 </tr>
-                            )
-                           })}
-                            </tbody>
-                            </table>
-                            </div>
+                                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                                    <Calendar size={20} className="text-fuchsia-500" />
+                                    Sleep History
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-slate-700">
+                                                <td className="text-left py-3 font-medium text-gray-400">Date</td>
+                                                <td className="text-left py-3 font-medium text-gray-400">Duration</td>
+                                                <td className="text-left py-3 font-medium text-gray-400">Quality</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {sampleSleepHistory.map((record, index) => {
+                                                const qualityOption = sleepQualityOptions.find(option => option.value === record.quality)
+                                                return (
+                                                    <tr key={index} className="border-b border-slate-700/50 last:border-0">
+                                                        <td className="py-3">{new Date(record.date).toLocaleDateString()}</td>
+                                                        <td className="py-3">{record.duration}h</td>
+                                                        <td className={`py-3 ${qualityOption?.color}`}>{qualityOption?.label}</td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
