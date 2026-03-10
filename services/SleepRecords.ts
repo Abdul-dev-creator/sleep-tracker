@@ -17,3 +17,20 @@ export async function fetchSleepRecords(userId: string): Promise<SleepRecord[]> 
         return []
     }
 }
+
+export async function deleteSleepRecord(recordId:string): Promise<boolean>{
+try {
+   if(!recordId) 
+    throw new Error('Record id is required')
+
+   const {error} = await supabase.from('sleep_records').delete().eq("id",recordId);
+
+   if (error) {
+    throw error;
+   }
+   return true;
+} catch (error) {
+    console.error('Error deleting sleep record',error)
+    throw error
+}
+}

@@ -1,8 +1,10 @@
-import { Calendar, MoreVertical } from 'lucide-react'
+import { Calendar, MoreVertical, Trash2 } from 'lucide-react'
 import { sleepQualityOptions } from './AddSleepRecord';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchSleepRecords } from '../../../services/SleepRecords';
+import { deleteSleepRecord, fetchSleepRecords } from '../../../services/SleepRecords';
 import { supabase } from '../../../lib/supabase';
+import SleepChart from './SleepChart';
+import DashboardLoadingScreen from './DashboardLoadingScreen';
 
 
 // const sampleSleepHistory =
@@ -68,18 +70,26 @@ export default function SleepHistory({ userId }: SleepHistoryProps) {
 
     const totalRecords = sleepRecords.length
 
+    const handleDeleteRecord = async (recordId:string) => {
+        setDeletingId(recordId);
+        await deleteSleepRecord(recordId);
+        setSleepRecords(prev => prev.filter(record => record.id !== recordId))
+        setShowMenuId(null);
+        setDeletingId(null);
+    }
 
-    if (loading) return <p className='text-gray-300'>Loading.....</p>
+
+    if (loading) return <DashboardLoadingScreen/>
     return (
         <>
             {/* sleep statistics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-slate-800 border border-slate-700 rounded-xl text-center p-6">
-                    <p className="text-3xl font-bold text-green-500">{averageSleep}hrs</p>
+                    <p className="text-3xl font-bold text-green-500">{(averageSleep).toFixed(1)}hrs</p>
                     <p className="text-gray-400">Average Sleep</p>
                 </div>
                 <div className="bg-slate-800 border border-slate-700 rounded-xl text-center p-6">
-                    <p className="text-3xl font-bold text-fuchsia-500">{bestSleep}hrs</p>
+                    <p className="text-3xl font-bold text-fuchsia-500">{(bestSleep).toFixed(1)}hrs</p>
                     <p className="text-gray-400">Best Sleep</p>
                 </div>
                 <div className="bg-slate-800 border border-slate-700 rounded-xl text-center p-6">
@@ -114,13 +124,27 @@ export default function SleepHistory({ userId }: SleepHistoryProps) {
                                         <td className={`py-3 ${qualityOption?.color}`}>{qualityOption?.label}</td>
                                         <td className='py-3'>
                                            <div className='relative'>
-                                             <button onClick={()=>setShowMenuId(showMenuId === record.id ? null : record.id)} className='p-1 rounded hover:bg-slate-700 transition-colors'>
+                                             <button disabled={deletingId === record.id} onClick={()=>setShowMenuId(showMenuId === record.id ? null : record.id)} className='p-1 rounded hover:bg-slate-700 transition-colors'>
                                                 <MoreVertical size={16} className='text-gray-400'/>
                                             </button>
                                             {showMenuId === record.id && (
                                                  <div className='absolute right-0 bottom-8 bg-slate-700 border border-slate-600 z-10 shadow-lg min-w-32 rounded-lg'>
-                                                <button className='w-full flex items-center  text-red-400 hover:bg-slate-600 px-4 py-2 gap-2 disabled:opacity-50 transition-colors cursor-pointer'>
-                                                    Delete
+                                                <button onClick={()=>handleDeleteRecord(record.id)} disabled={deletingId === record.id}  className='w-full flex items-center  text-red-400 hover:bg-slate-600 px-4 py-2 gap-2 disabled:opacity-50 transition-colors cursor-pointer'>
+                                                    {deletingId === record.id ? (
+                                                        <>
+                                                        <div className='w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin'>
+
+                                                        </div>
+                                                        Deleting....
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                        <Trash2 size={14}/>
+                                                        Delete
+                                                        </>
+                                                    )
+
+                                                    }
                                                 </button>
 
                                             </div>
@@ -136,6 +160,8 @@ export default function SleepHistory({ userId }: SleepHistoryProps) {
                     </table>
                 </div>
             </div>
+
+            <SleepChart sleepRecords={sleepRecords}/>
         </>
 
     )

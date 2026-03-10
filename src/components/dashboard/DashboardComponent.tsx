@@ -7,6 +7,7 @@ import { Activity, useState } from "react";
 import AddSleepRecord from "./AddSleepRecord";
 import Image from "next/image";
 import SleepHistory from "./SleepHistory";
+import DashboardLoadingScreen from "./DashboardLoadingScreen";
 
 
 
@@ -17,7 +18,7 @@ export default function DashboardComponent() {
     const userDetails = session?.user.user_metadata;
     const [showAddForm, setShowAddForm] = useState(false);
 
-    if (loading) return <p>Loading.....</p>
+    if (loading) return <DashboardLoadingScreen/>
 
     if (session) {
         return (
