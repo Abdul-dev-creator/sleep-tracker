@@ -29,8 +29,8 @@ export default function HeroSection() {
                 </div>
             </div>
 
-             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
-                <div className="animate-bounce">
+             {/* <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+                <div>
                     <div className="border-2 w-6 h-10 border-white rounded-full flex justify-center">
                         <div className="w-1 h-3 bg-white rounded mt-2">
 
@@ -39,7 +39,7 @@ export default function HeroSection() {
 
                 </div>
 
-                </div>
+                </div> */}
         </section>
 
     )
