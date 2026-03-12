@@ -10,11 +10,11 @@ export default function Header({setShowAddForm}:HeaderProps) {
   return (
     <div>
       <header className="bg-slate-800 border-b border-slate-700 px-6 py-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                     <Logo/>
                    <div className='flex items-center gap-3'>
                     <LogoutButton/>
-                    <button onClick={()=>setShowAddForm(true)}  className=' bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer'>
+                    <button onClick={()=>setShowAddForm(true)}  className='bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer'>
                         Add Sleep Record
                     </button>
                    </div>
